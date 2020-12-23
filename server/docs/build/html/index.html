@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Langman documentation &#8212; Langman  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="langman-documentation">
+<h1>Langman documentation<a class="headerlink" href="#langman-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-server.app">
+<span id="flask-server-api"></span><h2>Flask Server API<a class="headerlink" href="#module-server.app" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="server.app.Games">
+<em class="property">class </em><code class="sig-prename descclassname">server.app.</code><code class="sig-name descname">Games</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.Games" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="server.app.Games.close_db">
+<code class="sig-name descname">close_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.app.Games.close_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close down db connection; same one cannot be used b/w threads</p>
+<p>This gets decorated with &#64;app.teardown_request to close the db
+connection after each request.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.Games.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">game_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.Games.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the game <code class="docutils literal notranslate"><span class="pre">game_id</span></code> information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Route</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>The object for a game, including:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">game_id</span></code> The gmae’s UUID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">player</span></code> The player’s name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage_id</span></code> The game usage id from the Usages table</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">guessed</span></code> A string of guessed letters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reveal_word</span></code> Guessed letter in otherwise blanked word string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bad_guesses</span></code> Number of incorrect guesses so far</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code> The epoch ordinal time when game began</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_time</span></code> The epoch ordinal time when game ended</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result</span></code> Game outcome from (‘lost’, ‘won’, ‘active’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage</span></code> The full sentence example with guess-world blanked</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> The language of the example, such as ‘en’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code> The book from wich the usage example originated</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.Games.init_db">
+<code class="sig-name descname">init_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.app.Games.init_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize db by creating the global db_session</p>
+<p>This gets decorated with &#64;app.before_request to run on each request</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.Games.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.app.Games.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new game and return the game id
+:route: <code class="docutils literal notranslate"><span class="pre">/</span></code> GET</p>
+<dl class="field-list simple">
+<dt class="field-odd">Payload</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code> A string containing the player’s name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">language</span></code> Language to play in (e.g., ‘en’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A success message:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">message</span></code> Literal ‘success’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">game_id</span></code> The new game’s UUID</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="server.app.OneGame">
+<em class="property">class </em><code class="sig-prename descclassname">server.app.</code><code class="sig-name descname">OneGame</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">api</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.OneGame" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="server.app.OneGame.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">game_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.OneGame.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete record for game <code class="docutils literal notranslate"><span class="pre">game_id</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Route</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">/&lt;game_id&gt;</span></code> DELETE</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>An acknowledgement object:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">message</span></code> Either ‘One’ or ‘Zero’ records deleted</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<p>This method removed the game from its table</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.OneGame.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">game_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.OneGame.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the game <code class="docutils literal notranslate"><span class="pre">game_id</span></code> information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Route</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>The object for a game, including:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">game_id</span></code> The gmae’s UUID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">player</span></code> The player’s name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage_id</span></code> The game usage id from the Usages table</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">guessed</span></code> A string of guessed letters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reveal_word</span></code> Guessed letter in otherwise blanked word string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bad_guesses</span></code> Number of incorrect guesses so far</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code> The epoch ordinal time when game began</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_time</span></code> The epoch ordinal time when game ended</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result</span></code> Game outcome from (‘lost’, ‘won’, ‘active’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage</span></code> The full sentence example with guess-world blanked</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> The language of the example, such as ‘en’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code> The book from wich the usage example originated</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.OneGame.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">game_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.OneGame.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sate of the game</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="server.app.OneGame.put">
+<code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">game_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.app.OneGame.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update game <code class="docutils literal notranslate"><span class="pre">game_id</span></code> as resulting from a guessed letter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Route</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">\&lt;game_id&gt;</span></code> PUT</p>
+</dd>
+<dt class="field-even">Payload</dt>
+<dd class="field-even"><dl class="simple">
+<dt>The guessed letter as an object:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">letter</span></code> A single guessed letter</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The object for a game, including:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">game_id</span></code> The game’s UUID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">player</span></code> The player’s name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usage_id</span></code> The game usage id from the Usages table</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">guessed</span></code> A string of guessed letters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reveal_word</span></code> Guessed letters in otherwise blanked word string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bad_guesses</span></code> Number of incorrect guesses so far</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code> The epoch ordinal time when game began</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_time</span></code> The epoch ordinal time when game ended</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result</span></code> Game outcome from (‘lost’, ‘won’, ‘active’)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+<p>This method interacts with the database to update the indicated game</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-server.langman_orm">
+<span id="database-orm-and-schema"></span><h2>Database ORM and schema<a class="headerlink" href="#module-server.langman_orm" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="server.langman_orm.Game">
+<em class="property">class </em><code class="sig-prename descclassname">server.langman_orm.</code><code class="sig-name descname">Game</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.langman_orm.Game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table <code class="docutils literal notranslate"><span class="pre">games</span></code> with fields:
+* <code class="docutils literal notranslate"><span class="pre">game_id</span></code> - UUID primary key of length 38
+* <code class="docutils literal notranslate"><span class="pre">player</span></code> - Player key from <code class="docutils literal notranslate"><span class="pre">users</span></code> table, length 38
+* <code class="docutils literal notranslate"><span class="pre">usage_id</span></code> - Integer index usage in <code class="docutils literal notranslate"><span class="pre">usages</span></code> table
+* <code class="docutils literal notranslate"><span class="pre">guessed</span></code> - A string of the letters guessed so far
+* <code class="docutils literal notranslate"><span class="pre">reveal_word</span></code> - Secret word with guessed letters filled in
+* <code class="docutils literal notranslate"><span class="pre">bad_guesses</span></code> - Number of bad guesses so far as an integer
+* <code class="docutils literal notranslate"><span class="pre">start_time</span></code> - DateTime indicating when the game started
+* <code class="docutils literal notranslate"><span class="pre">end_time</span></code> - DateTime indicating when the game ended</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="server.langman_orm.Usage">
+<em class="property">class </em><code class="sig-prename descclassname">server.langman_orm.</code><code class="sig-name descname">Usage</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.langman_orm.Usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table <code class="docutils literal notranslate"><span class="pre">usages</span></code> with fields:
+* <code class="docutils literal notranslate"><span class="pre">usage_id</span></code> -  UUID primary key string of length 38
+* <code class="docutils literal notranslate"><span class="pre">language</span></code> - Two-letter language code (en, es, fr)
+* <code class="docutils literal notranslate"><span class="pre">secret_word</span></code> - Word to be guesses (length &lt;= 25)
+* <code class="docutils literal notranslate"><span class="pre">usage</span></code> - Usage sentence, length &lt;= 400, with word blanked
+* <code class="docutils literal notranslate"><span class="pre">source</span></code> - Text from which the usage sentence is drawn</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="server.langman_orm.User">
+<em class="property">class </em><code class="sig-prename descclassname">server.langman_orm.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.langman_orm.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tables <code class="docutils literal notranslate"><span class="pre">users</span></code> with fields:
+* <code class="docutils literal notranslate"><span class="pre">user_id</span></code> - UUID primary key of lenght 38
+* <code class="docutils literal notranslate"><span class="pre">user_name</span></code> - String of maximum length 30
+* <code class="docutils literal notranslate"><span class="pre">num_games</span></code> - Integer coung of games started
+* <code class="docutils literal notranslate"><span class="pre">outcomes</span></code> - JSON string storing game counts by outcome
+* <code class="docutils literal notranslate"><span class="pre">by_lang</span></code> - JSON string storing game counts by game language
+* <code class="docutils literal notranslate"><span class="pre">first_time</span></code> - DateTime indicating when first game was played
+* <code class="docutils literal notranslate"><span class="pre">total_time</span></code> - TimeDelta of total time with active games
+* <code class="docutils literal notranslate"><span class="pre">avg_time</span></code> - TimeDelta of the average game length</p>
+</dd></dl>
+
+</div>
+<div class="section" id="client-stylesheet">
+<h2>Client Stylesheet<a class="headerlink" href="#client-stylesheet" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="_static/storybook-static/index.html">Storybook Stylesheet</a>
+(Requires JavaScript)</p>
+</div>
+<div class="section" id="client-application">
+<h2>Client Application<a class="headerlink" href="#client-application" title="Permalink to this headline">¶</a></h2>
+<p>The following describes  the JavaScript client.</p>
+<span class="target" id="module-App"></span><dl class="js class">
+<dt id="App.App">
+<em class="property">class </em><code class="sig-prename descclassname">App.</code><code class="sig-name descname">App</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#App.App" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="js method">
+<dt id="App.App.constructor">
+<code class="sig-prename descclassname">App.</code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">props</em><span class="sig-paren">)</span><a class="headerlink" href="#App.App.constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The React lifecycle method to intialize the component. Sets
+the state <code class="docutils literal notranslate"><span class="pre">gameStatus</span></code> to ‘logged out’. Also, binds methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> (<em>props</em>) – The collection of properties for the
+object, which are typically set using JSX
+within a render method, but for this top
+level component come directly from React.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="js method">
+<dt id="App.App.startGame">
+<code class="sig-prename descclassname">App.</code><code class="sig-name descname">startGame</code><span class="sig-paren">(</span><em class="sig-param">nameValue</em>, <em class="sig-param">langValue</em><span class="sig-paren">)</span><a class="headerlink" href="#App.App.startGame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contacts server to start a new game, then updates state accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<em>langValue</em>) – name of player</p></li>
+<li><p><strong>string</strong> – Two-letter string indicating language choice</p></li>
+</ul>
+</dd>
+</dl>
+<p>State is set for <code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">language</span></code>, <code class="docutils literal notranslate"><span class="pre">gameId</span></code>,
+<code class="docutils literal notranslate"><span class="pre">badGuesses</span></code>, <code class="docutils literal notranslate"><span class="pre">guessed,</span> <span class="pre">``playerId</span></code>, <code class="docutils literal notranslate"><span class="pre">revealWord</span></code>,</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="welcome-to-langman-s-documentation">
+<h1>Welcome to Langman’s documentation!<a class="headerlink" href="#welcome-to-langman-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Langman</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Felix Acuna.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
