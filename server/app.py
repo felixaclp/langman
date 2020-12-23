@@ -66,3 +66,4 @@ def close_db(exception):
     if hasattr(g, 'games_db'):
         g.games_db.close()
         _ = g.pop('games_db')
+

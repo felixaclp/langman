@@ -4,7 +4,7 @@ import { SignInScreen, PlayScreen, WinScreen, LoseScreen } from './screen';
 import axios from 'axios';
 
 
-const APIURL = 'http://localhost:5000/';
+const APIURL = '';
 
 class App extends Component{
     constructor(props) {
