@@ -33,7 +33,7 @@ def get_config(env, config_resource):
 
     # Load any env: values from the environment
     for key,  value in config_dict.items():
-        if isinstance(value, str) and value.startswith('env_'):
+        if isinstance(value, str) and value.startswith('env:'):
             config_dict[key] = os.environ[value[4:]]
 
     # Put the values into the application config
